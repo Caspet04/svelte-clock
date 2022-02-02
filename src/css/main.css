@@ -6,11 +6,62 @@
     height: 100%;
 } */
 
+/* Clock container */
+#clock-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+/* Analog clock */
+#analog-clock {
+    min-width: 200px; 
+}
+
+.analog-marker-small {
+    stroke: #666;
+    stroke-width: 0.5;
+}
+
+.analog-marker-large {
+    stroke: #333;
+    stroke-width: 1;
+}
+
+.analog-clock-number {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 0.7em;
+}
+
+.analog-second-hand {
+    stroke: #E00;
+    stroke-linecap: round;
+    stroke-width: 1.1;
+}
+
+.analog-minute-hand {
+    stroke: #333;
+    stroke-linecap: round;
+    stroke-width: 1.1;
+}
+
+.analog-hour-hand {
+    stroke: #333;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+}
+
+.analog-clock-outside {
+    stroke: #000;
+    stroke-width: 2;
+    fill: none;
+}
+
 @font-face {
     font-family:'digital-clock-font';
     src: url('/fonts/clock.ttf');
 }
 
+/* Digital clock */
 #digital-clock {
     display: flex;
     justify-content: center;
@@ -19,6 +70,18 @@
     font-family: digital-clock-font;
     font-weight: bold;
 }
+
+/* Strip clock */
+#strip-clock {
+    min-width: 150px;
+}
+
+.strip-clock-number {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 0.2em;
+}
+
+/* Misc */
 
 button.clock-alarm-active {
     background: green;
@@ -54,80 +117,4 @@ div.overlay {
     bottom: 0;
     background-color: rgba(0,0,0,0.5); /* Black background with opacity */
     cursor: pointer; /* Add a pointer on hover */
-}
-
-#analog-clock {
-    min-width: 25vw;
-}
-
-.marker-small {
-    stroke: #666;
-    stroke-width: 0.5;
-}
-
-.marker-large {
-    stroke: #333;
-    stroke-width: 1;
-}
-
-.clock-number {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 0.7em;
-}
-
-.second-hand {
-    stroke: #E00;
-    stroke-linecap: round;
-    stroke-width: 1.1;
-}
-
-.minute-hand {
-    stroke: #333;
-    stroke-linecap: round;
-    stroke-width: 1.1;
-}
-
-.hour-hand {
-    stroke: #333;
-    stroke-linecap: round;
-    stroke-width: 1.5;
-}
-
-.clock-outside {
-    stroke: #000;
-    stroke-width: 2;
-    fill: none;
-}
-
-#strip-clock {
-    max-height: 25vh;
-    max-width: 25vh;
-    margin: auto;
-}
-
-.pointer {
-    fill: red;
-}
-
-.border {
-    fill: none;
-    stroke: black;
-    stroke-width: 0.5;
-}
-
-.clock-strip-number {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 0.2em;
-}
-
-#button-1 {
-    border-radius: 3px;
-}
-
-.alarm-marker {
-    stroke: red;
-}
-
-#clock-container {
-    display: flex;
 }

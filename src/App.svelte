@@ -2,7 +2,7 @@
 <script>
 	import { fly, fade } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
-	import { range, rangedLerp, loopingRangedLerp, loopingValue } from './js/utility.js';
+	import { range } from './js/utility.js';
 	import "./css/main.css";
 	import { Clock } from "./js/clock";
 
@@ -55,7 +55,6 @@
 </script>
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
-<!-- TODO: Set each clock in three separate columns -->
 <!-- NOTE: Consider removing the seconds indicators since they are relatively irrevelant and makes it less legible -->
 <main>
 	<div id="clock-container">
@@ -64,7 +63,7 @@
 			<svg viewBox='-50 -50 100 100'>
 				<!-- Clock markers, alternating larger and smaller every 5th marker -->
 				{#each range(0, 60, 1) as marker}
-					<line class='marker-{marker % 5 == 0 ? "large" : "small"}'
+					<line class='analog-marker-{marker % 5 == 0 ? "large" : "small"}'
 						y1='{45 - (marker % 5 == 0 ? 10 : 5)}'
 						y2='45'
 						transform='rotate({6 * marker})' />
@@ -74,7 +73,7 @@
 				{#each range(1, 13, 1) as clockNumber}
 					<g transform='rotate({-180+30*clockNumber})'>
 						<text 
-							class="clock-number"
+							class="analog-clock-number"
 							transform='rotate({180-30*clockNumber},0,29)' 
 							text-anchor='middle' 
 							y='32'>
@@ -84,25 +83,25 @@
 				{/each}
 				
 				<!-- Hour hand -->
-				<line class='hour-hand'
+				<line class='analog-hour-hand'
 					y1='-5'
 					y2='35'
 					transform='rotate({180 + 30 * clock.hour})' />
 				
 				<!-- Minute hand -->
-				<line class='minute-hand'
+				<line class='analog-minute-hand'
 					y1='-7'
 					y2='45'
 					transform='rotate({180 + 6 * clock.minute})' />
 				
 				<!-- Second hand -->
-				<line class='second-hand'
+				<line class='analog-second-hand'
 					y1='-10'
 					y2='45'
 					transform='rotate({180 + 6 * clock.second})' />
 				
 				<!-- Outside circle -->
-				<circle class='clock-outside'
+				<circle class='analog-clock-outside'
 					cx='0'
 					cy='0'
 					r='45' />
@@ -133,8 +132,7 @@
 			{/key}
 		</div>
 
-		<!-- TODO: Remake into vertical strips instead -->
-		<!-- Strip style clock, second, minute and hour is represented by a moving strip each -->
+		<!-- Strip style clock, all digits are represented by vertically moving strips -->
 		<div id="strip-clock">
 			<svg viewBox='0 {(20*stripHoleSize + stripHeightPadding*2)/-2} {stripWidth+2} {20*stripHoleSize + stripHeightPadding*2}' width='100%' height='100%'>
 				{#each range(0, 6, 1) as i}
@@ -153,7 +151,7 @@
 								y="{stripHoleSize*j + stripHeightPadding*2 + 0.1}"
 								x="0.1"
 								fill="white" />
-							<text class="clock-strip-number"
+							<text class="strip-clock-number"
 								text-anchor="middle"
 								x="{stripHoleSize/2}"
 								y="{stripHoleSize * j + stripHeightPadding + stripHoleSize}">{j}</text>
