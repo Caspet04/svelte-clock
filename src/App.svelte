@@ -184,27 +184,4 @@
 			</svg>
 		</div>
 	</div>
-	<!--
-	<div id="clock-container">
-		<div id="strip-clock">
-			
-		</div>
-
-		{#if clock.alarmIsTriggered}
-			<div class="overlay">
-				<div id="clock-alarm-triggered-popup">
-					<h1>Alarm Triggered!</h1>
-					<button on:click="{() => {clock.alarmIsTriggered = false}}">
-						Reset Alarm</button>
-					<button on:click="{() => {clock.alarmIsTriggered = false; clock.alarmIsActive = false}}">Close</button>
-				</div>
-			</div>
-		{/if}
-		
-		<button id="clock-toggle-alarm-active" on:click={() => {clock.toggleAlarm()}}
-			class="{clock.alarmIsActive ? 'clock-alarm-active' : 'clock-alarm-inactive'}">
-			Toggle Alarm</button>
-		<input type="time" bind:value={clock.alarmTimeAsString}>
-	</div>
-	-->
 </main>
