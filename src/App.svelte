@@ -1,4 +1,3 @@
-<!-- TODO: Refactor all code so it is more readable -->
 <script>
 	import { fly, fade } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
@@ -55,7 +54,6 @@
 </script>
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
-<!-- NOTE: Consider removing the seconds indicators since they are relatively irrevelant and makes it less legible -->
 <main>
 	<div id="clock-container">
 		<!-- "Normal" analog style clock -->
