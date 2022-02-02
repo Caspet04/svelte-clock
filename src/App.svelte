@@ -1,4 +1,3 @@
-<!-- TODO: Refactor after added the ability to get single digits from clock -->
 <!-- TODO: Add config overlay that appears when configurating a clock -->
 <!-- TODO: Make it possible to have multiple alarms, unique to each clock -->
 <!-- TODO: Add ability to change each clocks timezone -->
@@ -37,13 +36,14 @@
 		clock.syncTime();
 		clock.updateAlarm();
 		clock = clock;
-
+		
+		//TODO: Refactor after added the ability to get single digits from clock
 		for (let i = 0; i < 8; i++) {
 			if (clock.timeAsString[i] != timeString[i]) {
 				timeString[i] = clock.timeAsString[i];
 			}
 		}
-
+		
 		stripYSpring0.set(clock.getDigit(0));
 		stripYSpring1.set(clock.getDigit(1));
 		stripYSpring2.set(clock.getDigit(2));
