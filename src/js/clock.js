@@ -94,7 +94,7 @@ export class Clock {
 
     updateAlarm() {
         // Test if alarm is triggered
-        if (this._time.hour == this._alarm.hour     &&
+        if (this._time.hour   == this._alarm.hour   &&
             this._time.minute == this._alarm.minute &&
             this._time.second == this._alarm.second) {
             

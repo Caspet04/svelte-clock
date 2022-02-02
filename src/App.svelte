@@ -1,7 +1,7 @@
 <!-- TODO: Refactor all code so it is more readable -->
 <script>
-	import { fly } from 'svelte/transition';
-
+	import { fly, fade } from 'svelte/transition';
+	import { spring } from 'svelte/motion';
 	import { range, rangedLerp, loopingRangedLerp, loopingValue } from './js/utility.js';
 	import "./css/main.css";
 	import { Clock } from "./js/clock";
@@ -10,7 +10,23 @@
 	let timeString = [
 		"0", "0", ":", "0", "0", ":", "0", "0"
 	]
-	let secondSpring
+	
+	const stripSizes = [3, 10, 6, 10, 6, 10];
+	const stripHoleSize = 4;
+	const stripHolePadding = 0.5;
+	const stripHoleGap = 2;
+	const stripSidePadding = 1;
+	const stripHeightPadding = 1;
+	const stripWidth = stripHoleSize*6 + stripHolePadding*3 + stripHoleGap*2 + stripSidePadding*2;
+
+	let stripYOffset = [0, 0, 0, 0, 0, 0];
+	let hour_tens    = spring(0);
+	let hour_ones    = spring(0);
+	let minute_tens  = spring(0);
+	let minute_ones  = spring(0);
+	let second_tens  = spring(0);
+	let second_ones  = spring(0);
+
 
 	setInterval(() => {
 		clock.syncTime();
@@ -21,9 +37,21 @@
 				timeString[i] = clock.timeAsString[i];
 			}
 		}
-	}, 10);
 
-	let stripClockWidth = 200;
+		hour_tens.set(   Math.floor(clock.hour / 10));
+		hour_ones.set(   clock.hour % 10);
+		minute_tens.set( Math.floor(clock.minute / 10));
+		minute_ones.set( clock.minute % 10);
+		second_tens.set( Math.floor(clock.second / 10));
+		second_ones.set( clock.second % 10);
+
+		stripYOffset[0] = $hour_tens;
+		stripYOffset[1] = $hour_ones;
+		stripYOffset[2] = $minute_tens;
+		stripYOffset[3] = $minute_ones;
+		stripYOffset[4] = $second_tens;
+		stripYOffset[5] = $second_ones;
+	}, 10);
 </script>
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
@@ -78,118 +106,83 @@
 					cx='0'
 					cy='0'
 					r='45' />
-				</svg>
-			</div>
-			
-			<!-- 00:00:00 style clock -->
-			<div id="digital-clock">
-				{#key timeString[0]}
-					<span in:fly="{{y: -20}}">{timeString[0]}</span>
-				{/key}
-				{#key timeString[1]}
-					<span in:fly="{{y: -20}}">{timeString[1]}</span>
-				{/key}
-				{#key timeString[2]}
-					<span in:fly="{{y: -20}}">{timeString[2]}</span>
-				{/key}
-				{#key timeString[3]}
-					<span in:fly="{{y: -20}}">{timeString[3]}</span>
-				{/key}
-				{#key timeString[4]}
-					<span in:fly="{{y: -20}}">{timeString[4]}</span>
-				{/key}
-				{#key timeString[5]}
-					<span in:fly="{{y: -20}}">{timeString[5]}</span>
-				{/key}
-				{#key timeString[6]}
-					<span in:fly="{{y: -20}}">{timeString[6]}</span>
-				{/key}
-				{#key timeString[7]}
-					<span in:fly="{{y: -20}}">{timeString[7]}</span>
-				{/key}
-			</div>
-
-			<!-- TODO: Remake into vertical strips instead -->
-			<!-- Strip style clock, second, minute and hour is represented by a moving strip each -->
-			<div id="strip-clock">
-				<svg viewBox='-{(stripClockWidth+4)/2} 0 {stripClockWidth+4} 54' width='100%' height='100%'>
-					<!-- Second moving markers, alternating large and small every 5th marker -->
-					{#each range(0, 60, 1) as marker}
-					{#if loopingValue(marker+30 - clock.second, 0, 60) < 45 && loopingValue(marker+30 - clock.second, 0, 60) > 15}
-					<line class='marker-{marker % 5 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmSecond ? "alarm-marker" : "")}'
-							y1='{marker % 5 == 0 ? 6 : 7}'
-							y2='10'
-							x1='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'/>
-						{#if marker % 5 == 0}
-							<text 
-								class="clock-strip-number"
-								text-anchor='middle' 
-								y='5'
-								x='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
-								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
-								{marker}
-						</text>
-						{/if}
-					{/if}
-				{/each}
-				<!-- Triangle showing where current second is placed -->
-				<polygon points="0,6 -1,2 1,2" class="pointer" />
-				<!-- Border surrounding second strip -->
-				<polygon points="-{stripClockWidth/2},2 -{stripClockWidth/2},10 {stripClockWidth/2},10 {stripClockWidth/2},2" class="border" />
-
-				<!-- Minute moving markers, alternating large and small every 5th marker -->
-				{#each range(0, 60, 1) as marker}
-					{#if loopingValue(marker+30 - clock.minute, 0, 60) < 45 && loopingValue(marker+30 - clock.minute, 0, 60) > 15}
-						<line class='marker-{marker % 5 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmMinute ? "alarm-marker" : "")}'
-							y1='{marker % 5 == 0 ? 16 : 17}'
-							y2='20'
-							x1='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}' />
-						{#if marker % 5 == 0}
-							<text 
-								class="clock-strip-number"
-								text-anchor='middle' 
-								y='15'
-								x='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
-								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
-								{marker}
-						</text>
-						{/if}
-					{/if}
-				{/each}
-				<!-- Triangle showing where current minute is placed -->
-				<polygon points="0,16 -1,12 1,12" class="pointer" />
-				<!-- Border surrounding minute strip -->
-				<polygon points="-{stripClockWidth/2},12 -{stripClockWidth/2},20 {stripClockWidth/2},20 {stripClockWidth/2},12" class="border" />
-
-				<!-- Hour moving markers -->
-				{#each range(0, 24*2, 1) as marker}
-					{#if loopingValue(marker+24 - clock.hour*2, 0, 24*2) < 36 && loopingValue(marker+24 - clock.hour*2, 0, 24*2) > 12}
-						<line class='marker-{marker % 2 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmHour ? "alarm-marker" : "")}'
-							y1='{marker % 2 == 0 ? 26 : 27}'
-							y2='30'
-							x1='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}' />
-						{#if marker % 2 == 0}
-							<text 
-								class="clock-strip-number"
-								text-anchor='middle' 
-								y='25'
-								x='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'>
-								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
-								{marker/2}
-						</text>
-						{/if}
-					{/if}
-				{/each}
-				<!-- Triangle showing where current hour is placed -->
-				<polygon points="0,26 -1,22 1,22" class="pointer" />
-				<!-- Border surrounding hour strip -->
-				<polygon points="-{stripClockWidth/2},22 -{stripClockWidth/2},30 {stripClockWidth/2},30 {stripClockWidth/2},22" class="border" />
 			</svg>
 		</div>
+			
+			<!-- 00:00:00 style clock -->
+		<div id="digital-clock">
+			{#key timeString[0]}
+				<span in:fly="{{y: -20}}">{timeString[0]}</span>
+			{/key}
+			{#key timeString[1]}
+				<span in:fly="{{y: -20}}">{timeString[1]}</span>
+			{/key}
+			:
+			{#key timeString[3]}
+				<span in:fly="{{y: -20}}">{timeString[3]}</span>
+			{/key}
+			{#key timeString[4]}
+				<span in:fly="{{y: -20}}">{timeString[4]}</span>
+			{/key}
+			:
+			{#key timeString[6]}
+				<span in:fly="{{y: -20}}">{timeString[6]}</span>
+			{/key}
+			{#key timeString[7]}
+				<span in:fly="{{y: -20}}">{timeString[7]}</span>
+			{/key}
+		</div>
 
+		<!-- TODO: Remake into vertical strips instead -->
+		<!-- Strip style clock, second, minute and hour is represented by a moving strip each -->
+		<div id="strip-clock">
+			<svg viewBox='0 {(20*stripHoleSize + stripHeightPadding*2)/-2} {stripWidth+2} {20*stripHoleSize + stripHeightPadding*2}' width='100%' height='100%'>
+				{#each range(0, 6, 1) as i}
+					<g transform="translate({1 + stripSidePadding + stripHoleSize*i + Math.floor((i+1)/2)*stripHolePadding + Math.floor(i/2)*stripHoleGap},{-stripHoleSize*stripYOffset[i]-stripHoleSize/2 - stripHeightPadding - 1})">
+						<rect
+							width="{stripHoleSize}"
+							height="{stripHoleSize*stripSizes[i] + stripHeightPadding*2 + 2}"
+							rx="1" ry="1"
+							fill="gray" />
+						{#each range(0, stripSizes[i], 1) as j}
+							<rect
+								width="{stripHoleSize-0.2}"
+								height="{stripHoleSize-0.2}"
+								rx="{stripHoleSize-0.2}"
+								ry="{stripHoleSize-0.2}"
+								y="{stripHoleSize*j + stripHeightPadding*2 + 0.1}"
+								x="0.1"
+								fill="white" />
+							<text class="clock-strip-number"
+								text-anchor="middle"
+								x="{stripHoleSize/2}"
+								y="{stripHoleSize * j + stripHeightPadding + stripHoleSize}">{j}</text>
+						{/each}
+					</g>
+				{/each}
+				<mask id="numberHoles">
+					<rect
+						x="0" y="-50"
+						width="100%" height="100%"
+						fill="white"/>
+					
+					{#each range(0, 6, 1) as i}
+						<rect 
+							x="{1 + stripSidePadding + stripHoleSize*i + Math.floor((i+1)/2)*stripHolePadding + Math.floor(i/2)*stripHoleGap}"
+							y="{-stripHoleSize / 2}"
+							width="{stripHoleSize}" height="{stripHoleSize}"
+							rx="1" ry="1"
+							fill="black"/>
+					{/each}
+				</mask>
+				<rect
+					x="1" y="{-stripHoleSize/2 - 1}"
+					width="{stripWidth}" height="{stripHoleSize + stripHeightPadding*2}"
+					rx="2" ry="2"
+					mask="url(#numberHoles)" />
+			</svg>
+		</div>
+<!-- 
 		{#if clock.alarmIsTriggered}
 			<div class="overlay">
 				<div id="clock-alarm-triggered-popup">
@@ -204,6 +197,6 @@
 		<button id="clock-toggle-alarm-active" on:click={() => {clock.toggleAlarm()}}
 			class="{clock.alarmIsActive ? 'clock-alarm-active' : 'clock-alarm-inactive'}">
 			Toggle Alarm</button>
-		<input type="time" bind:value={clock.alarmTimeAsString}>
+		<input type="time" bind:value={clock.alarmTimeAsString}> -->
 	</div>
 </main>
