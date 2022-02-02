@@ -39,3 +39,19 @@ export function rangedLerp(value, leftMin, leftMax, rightMin, rightMax) {
 	// Convert the normalized value to the assigned range
 	return rightMin + (rightSpan * valueNormalized);
 }
+
+// Shorthand for using loopingValue() on value
+export function loopingRangedLerp(value, leftMin, leftMax, rightMin, rightMax) {
+	return rangedLerp(loopingValue(value, leftMin, leftMax), leftMin, leftMax, rightMin, rightMax);
+}
+
+// loopingValue takes in a range and makes over- and underflow act properly
+// Example: loopingValue(55, 25, 50) = 30
+// Example: loopingValue(20, 25, 50) = 45
+export function loopingValue(value, min, max) {
+	let loopedValue = min + value % (max-min);
+	if (loopedValue < 0) {
+		return max + loopedValue;
+	}
+	return loopedValue;
+}
