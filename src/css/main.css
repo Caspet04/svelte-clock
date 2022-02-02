@@ -1,3 +1,53 @@
+html, body, main {
+    margin: 0;
+    padding: 0;
+}
+
+/* Panel */
+#panel {
+    width: 10%;
+    height: 100%;
+    position: fixed;
+
+    background-color: lightgrey;
+}
+
+#panel ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#panel ul li {
+    box-sizing: border-box;
+    padding-left: 10px;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid black;
+}
+
+#panel ul li:last-child {
+    border-bottom: none;
+}
+
+#panel ul li:hover {
+    background: darkgrey;
+}
+
+#panel ul li button {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+}
+
+/* Content */
+#content {
+    margin-left: 10%;
+}
+
 /* Clock container */
 #clock-container {
     display: flex;

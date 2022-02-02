@@ -14,6 +14,7 @@ export class Clock {
             active: false,
             triggered: false
         }
+        this.timezone = null;
     }
 
     get timeAsString() {
@@ -70,12 +71,19 @@ export class Clock {
     get alarmHour()   { return this._alarm.hour;   }
 
     syncTime() {
-        // Set time to the current time
+        // Set time to the current local time
         var today = new Date();
+
         this._time.millisecond = today.getMilliseconds();
         this._time.second      = today.getSeconds();
         this._time.minute      = today.getMinutes();
         this._time.hour        = today.getHours();
+
+        if (this.timezone != null) {
+            this._time.hour += Math.floor(this.timezone);
+            this._time.minute += this.timezone % 1 * 60;
+        }
+
     }
 
     tick(useMilli=false) {
