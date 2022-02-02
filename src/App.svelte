@@ -27,7 +27,6 @@
 	let second_tens  = spring(0);
 	let second_ones  = spring(0);
 
-
 	setInterval(() => {
 		clock.syncTime();
 		clock.updateAlarm();
@@ -52,6 +51,7 @@
 		stripYOffset[4] = $second_tens;
 		stripYOffset[5] = $second_ones;
 	}, 10);
+	
 </script>
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
@@ -59,11 +59,12 @@
 <main>
 	<div id="clock-container">
 		<!-- "Normal" analog style clock -->
-		<div id="analog-clock">
+		<div class="clock" id="analog">
+			<button class="configButton"></button>
 			<svg viewBox='-50 -50 100 100'>
 				<!-- Clock markers, alternating larger and smaller every 5th marker -->
 				{#each range(0, 60, 1) as marker}
-					<line class='analog-marker-{marker % 5 == 0 ? "large" : "small"}'
+					<line class='marker-{marker % 5 == 0 ? "large" : "small"}'
 						y1='{45 - (marker % 5 == 0 ? 10 : 5)}'
 						y2='45'
 						transform='rotate({6 * marker})' />
@@ -73,7 +74,6 @@
 				{#each range(1, 13, 1) as clockNumber}
 					<g transform='rotate({-180+30*clockNumber})'>
 						<text 
-							class="analog-clock-number"
 							transform='rotate({180-30*clockNumber},0,29)' 
 							text-anchor='middle' 
 							y='32'>
@@ -83,57 +83,60 @@
 				{/each}
 				
 				<!-- Hour hand -->
-				<line class='analog-hour-hand'
+				<line class='hand' id='hour'
 					y1='-5'
 					y2='35'
 					transform='rotate({180 + 30 * clock.hour})' />
 				
 				<!-- Minute hand -->
-				<line class='analog-minute-hand'
+				<line class='hand' id='minute'
 					y1='-7'
 					y2='45'
 					transform='rotate({180 + 6 * clock.minute})' />
 				
 				<!-- Second hand -->
-				<line class='analog-second-hand'
+				<line class='hand' id='second'
 					y1='-10'
 					y2='45'
 					transform='rotate({180 + 6 * clock.second})' />
 				
 				<!-- Outside circle -->
-				<circle class='analog-clock-outside'
+				<circle class='clock-outside'
 					cx='0'
 					cy='0'
 					r='45' />
 			</svg>
 		</div>
-			
-			<!-- 00:00:00 style clock -->
-		<div id="digital-clock">
-			{#key timeString[0]}
-				<span in:fly="{{y: -20}}">{timeString[0]}</span>
-			{/key}
-			{#key timeString[1]}
-				<span in:fly="{{y: -20}}">{timeString[1]}</span>
-			{/key}
-			:
-			{#key timeString[3]}
-				<span in:fly="{{y: -20}}">{timeString[3]}</span>
-			{/key}
-			{#key timeString[4]}
-				<span in:fly="{{y: -20}}">{timeString[4]}</span>
-			{/key}
-			:
-			{#key timeString[6]}
-				<span in:fly="{{y: -20}}">{timeString[6]}</span>
-			{/key}
-			{#key timeString[7]}
-				<span in:fly="{{y: -20}}">{timeString[7]}</span>
-			{/key}
+		<div class="clock" id="digital">
+			<button class="configButton"></button>
+			<div class="clock">
+				{#key timeString[0]}
+					<span in:fly="{{y: -20}}">{timeString[0]}</span>
+				{/key}
+				{#key timeString[1]}
+					<span in:fly="{{y: -20}}">{timeString[1]}</span>
+				{/key}
+				
+				:
+				
+				{#key timeString[3]}
+					<span in:fly="{{y: -20}}">{timeString[3]}</span>
+				{/key}
+				{#key timeString[4]}
+					<span in:fly="{{y: -20}}">{timeString[4]}</span>
+				{/key}
+				
+				:
+				{#key timeString[6]}
+					<span in:fly="{{y: -20}}">{timeString[6]}</span>
+				{/key}
+				{#key timeString[7]}
+					<span in:fly="{{y: -20}}">{timeString[7]}</span>
+				{/key}
+			</div>
 		</div>
-
-		<!-- Strip style clock, all digits are represented by vertically moving strips -->
-		<div id="strip-clock">
+		<div class="clock" id="strip">
+			<button class="configButton"></button>
 			<svg viewBox='0 {(20*stripHoleSize + stripHeightPadding*2)/-2} {stripWidth+2} {20*stripHoleSize + stripHeightPadding*2}' width='100%' height='100%'>
 				{#each range(0, 6, 1) as i}
 					<g transform="translate({1 + stripSidePadding + stripHoleSize*i + Math.floor((i+1)/2)*stripHolePadding + Math.floor(i/2)*stripHoleGap},{-stripHoleSize*stripYOffset[i]-stripHoleSize/2 - stripHeightPadding - 1})">
@@ -151,7 +154,7 @@
 								y="{stripHoleSize*j + stripHeightPadding*2 + 0.1}"
 								x="0.1"
 								fill="white" />
-							<text class="strip-clock-number"
+							<text
 								text-anchor="middle"
 								x="{stripHoleSize/2}"
 								y="{stripHoleSize * j + stripHeightPadding + stripHoleSize}">{j}</text>
@@ -180,7 +183,13 @@
 					mask="url(#numberHoles)" />
 			</svg>
 		</div>
-<!-- 
+	</div>
+	<!--
+	<div id="clock-container">
+		<div id="strip-clock">
+			
+		</div>
+
 		{#if clock.alarmIsTriggered}
 			<div class="overlay">
 				<div id="clock-alarm-triggered-popup">
@@ -195,6 +204,7 @@
 		<button id="clock-toggle-alarm-active" on:click={() => {clock.toggleAlarm()}}
 			class="{clock.alarmIsActive ? 'clock-alarm-active' : 'clock-alarm-inactive'}">
 			Toggle Alarm</button>
-		<input type="time" bind:value={clock.alarmTimeAsString}> -->
+		<input type="time" bind:value={clock.alarmTimeAsString}>
 	</div>
+	-->
 </main>

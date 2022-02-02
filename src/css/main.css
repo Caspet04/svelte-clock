@@ -1,82 +1,87 @@
-/* #clock-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-} */
-
 /* Clock container */
 #clock-container {
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
+}
+
+.clock {
+    display: flex;
+}
+
+/* Edit Buttons */
+.clock .configButton {
+    margin: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background-image: url('/images/config-button.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 /* Analog clock */
-#analog-clock {
-    min-width: 200px; 
-}
-
-.analog-marker-small {
-    stroke: #666;
-    stroke-width: 0.5;
-}
-
-.analog-marker-large {
-    stroke: #333;
-    stroke-width: 1;
-}
-
-.analog-clock-number {
+.clock#analog {
+    min-width: 300px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 0.7em;
 }
 
-.analog-second-hand {
+.clock#analog .marker-small {
+    stroke: #666;
+    stroke-width: 0.5;
+}
+
+.clock#analog .marker-large {
+    stroke: #333;
+    stroke-width: 1;
+}
+
+.clock#analog .hand {
+    stroke-linecap: round;
+}
+
+.clock#analog .hand#second {
     stroke: #E00;
-    stroke-linecap: round;
     stroke-width: 1.1;
 }
 
-.analog-minute-hand {
+.clock#analog .hand#minute {
     stroke: #333;
-    stroke-linecap: round;
     stroke-width: 1.1;
 }
 
-.analog-hour-hand {
+.clock#analog .hand#hour {
     stroke: #333;
-    stroke-linecap: round;
     stroke-width: 1.5;
 }
 
-.analog-clock-outside {
+.clock#analog .clock-outside {
     stroke: #000;
     stroke-width: 2;
     fill: none;
 }
 
+/* Digital clock */
 @font-face {
     font-family:'digital-clock-font';
     src: url('/fonts/clock.ttf');
 }
 
-/* Digital clock */
-#digital-clock {
+.clock#digital .clock {
     display: flex;
     justify-content: center;
     color: black;
-    font-size: 4em;
+    font-size: 5em;
     font-family: digital-clock-font;
     font-weight: bold;
 }
 
 /* Strip clock */
-#strip-clock {
+.clock#strip {
     min-width: 150px;
-}
-
-.strip-clock-number {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 0.2em;
 }
