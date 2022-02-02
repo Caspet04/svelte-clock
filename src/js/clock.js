@@ -118,4 +118,21 @@ export class Clock {
         }
         this.alarmIsActive = !this.alarmIsActive;
     }
+
+    getDigit(index) {
+        switch(index) {
+            case 0:
+                return Math.floor(this.hour / 10);
+            case 1:
+                return this.hour % 10;
+            case 2:
+                return Math.floor(this.minute / 10);
+            case 3:
+                return this.minute % 10;
+            case 4:
+                return Math.floor(this.second / 10);
+            case 5:
+                return this.second % 10;
+        }
+    }
 }

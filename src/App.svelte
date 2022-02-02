@@ -24,13 +24,14 @@
 	const stripHeightPadding = 1;
 	const stripWidth = stripHoleSize*6 + stripHolePadding*3 + stripHoleGap*2 + stripSidePadding*2;
 
+	// NOTE: It's really difficult to use a list of springs for some reason, and I can't be bothered so...
 	let stripYOffset = [0, 0, 0, 0, 0, 0];
-	let hour_tens    = spring(0);
-	let hour_ones    = spring(0);
-	let minute_tens  = spring(0);
-	let minute_ones  = spring(0);
-	let second_tens  = spring(0);
-	let second_ones  = spring(0);
+	let stripYSpring0 = spring(0);
+	let stripYSpring1 = spring(0);
+	let stripYSpring2 = spring(0);
+	let stripYSpring3 = spring(0);
+	let stripYSpring4 = spring(0);
+	let stripYSpring5 = spring(0);
 
 	setInterval(() => {
 		clock.syncTime();
@@ -43,19 +44,19 @@
 			}
 		}
 
-		hour_tens.set(   Math.floor(clock.hour / 10));
-		hour_ones.set(   clock.hour % 10);
-		minute_tens.set( Math.floor(clock.minute / 10));
-		minute_ones.set( clock.minute % 10);
-		second_tens.set( Math.floor(clock.second / 10));
-		second_ones.set( clock.second % 10);
+		stripYSpring0.set(clock.getDigit(0));
+		stripYSpring1.set(clock.getDigit(1));
+		stripYSpring2.set(clock.getDigit(2));
+		stripYSpring3.set(clock.getDigit(3));
+		stripYSpring4.set(clock.getDigit(4));
+		stripYSpring5.set(clock.getDigit(5));
 
-		stripYOffset[0] = $hour_tens;
-		stripYOffset[1] = $hour_ones;
-		stripYOffset[2] = $minute_tens;
-		stripYOffset[3] = $minute_ones;
-		stripYOffset[4] = $second_tens;
-		stripYOffset[5] = $second_ones;
+		stripYOffset[0] = $stripYSpring0;
+		stripYOffset[1] = $stripYSpring1;
+		stripYOffset[2] = $stripYSpring2;
+		stripYOffset[3] = $stripYSpring3;
+		stripYOffset[4] = $stripYSpring4;
+		stripYOffset[5] = $stripYSpring5;
 	}, 10);
 	
 </script>
