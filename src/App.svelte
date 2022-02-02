@@ -22,6 +22,8 @@
 	let selectedTimezone = [
 		null, null, null
 	];
+
+    let clockConfigOverlayHidden = true;
 	
 	// NOTE: Consider moving to another file
 	const stripSizes = [3, 10, 6, 10, 6, 10];
@@ -75,24 +77,32 @@
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
 <main>
-	<div id="overlays">
-		<div id="config-clocks-overlay">
-			{#each range(1, 4, 1) as i}
-				<div id="clock-{i}">
-					<label><select bind:value={selectedTimezone[i-1]} name="timezone" id="clock-{i}-timezone">
-						{#each timezones as timezone}
-							<option value="{timezone.value}">{timezone.label}</option>
-						{/each}
-					</select></label>
-				</div>
-			{/each}
+	{#if !clockConfigOverlayHidden }
+		<div id="clock-config-overlay">
+			<div id="clock-config-overlay-content">
+				<button id="clock-config-overlay-close-button" on:click="{() => { clockConfigOverlayHidden = true; }}">Close</button>
+				{#each range(1, 4, 1) as i}
+					<div id="clock-{i}">
+						<h2>{ ["Left Clock", "Center Clock", "Right Clock"][i-1] }</h2>
+						<div class="clock-controls">
+							<span style="grid-row: 1; grid-column: 1">Timezone: </span>
+							<select style="grid-row: 1; grid-column: 2 / 3" bind:value={selectedTimezone[i-1]} name="timezone" id="clock-{i}-timezone">
+								{#each timezones as timezone}
+									<option value="{timezone.value}">{timezone.label}</option>
+								{/each}
+							</select>
+							<label style="grid-row: 2; grid-column: 1">Alarm: <input type="checkbox" bind:value={clocks[i-1].alarmIsActive}></label>
+							<input style="grid-row: 2; grid-column: 2; width: 100px;" type="time" bind:value={clocks[i-1].alarmTimeAsString}>
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
-		<div id="config-alarms-overlay"></div>
-	</div>
+	{/if}
+
 	<div id="panel">
 		<ul>
-			<li><button on:click="{() => {alert("config clocks");}}">Config Clocks</button></li>
-			<li><button on:click="{() => {alert("config alarms");}}">Config Alarms</button></li>
+			<li><button on:click="{() => { clockConfigOverlayHidden = false; }}">Config Clocks</button></li>
 		</ul>
 	</div>
 	<div id="content">
@@ -143,6 +153,9 @@
 						cy='0'
 						r='45' />
 				</svg>
+				{#if clocks[0].alarmIsTriggered }
+					ALARM
+				{/if}
 			</div>
 			<div class="clock" id="digital">
 				<div class="clock">

@@ -5,9 +5,9 @@ html, body, main {
 
 /* Panel */
 #panel {
-    width: 10%;
-    height: 100%;
-    position: fixed;
+    width: 100vw;
+    height: 40px;
+    margin-bottom: 20px;
 
     background-color: lightgrey;
 }
@@ -43,33 +43,54 @@ html, body, main {
     text-align: left;
 }
 
+/* Overlays */
+#clock-config-overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#clock-config-overlay-content {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+#clock-config-overlay-close-button {
+    float: right;
+}
+
+.clock-controls {
+    display: grid;
+    word-wrap: none;
+    white-space: nowrap;
+    grid-template-columns: min-content min-content auto;
+    grid-template-rows: min-content min-content;
+}
+
+.clock-controls *:nth-child(odd) {
+    margin-right: 10px;
+}
+
 /* Content */
 #content {
     margin-left: 10%;
 }
+
 
 /* Clock container */
 #clock-container {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-}
-
-.clock {
-    
-}
-
-/* Edit Buttons */
-.clock .configButton {
-    margin: 0;
-    width: 32px;
-    height: 32px;
-    border: none;
-    background-image: url('/images/config-button.png');
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
 }
 
 /* Analog clock */
