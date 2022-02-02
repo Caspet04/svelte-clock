@@ -18,6 +18,10 @@
 	let timeString = [
 		"0", "0", ":", "0", "0", ":", "0", "0"
 	]
+
+	let selectedTimezone = [
+		null, null, null
+	];
 	
 	// NOTE: Consider moving to another file
 	const stripSizes = [3, 10, 6, 10, 6, 10];
@@ -39,6 +43,9 @@
 
 	setInterval(() => {
 		for (let i = 0; i < 3; i++) {
+			if (selectedTimezone[i] != null) {
+				clocks[i].timezone = selectedTimezone[i];
+			}
 			clocks[i].syncTime();
 			clocks[i].updateAlarm();
 			clocks[i] = clocks[i];
@@ -72,7 +79,7 @@
 		<div id="config-clocks-overlay">
 			{#each range(1, 4, 1) as i}
 				<div id="clock-{i}">
-					<label><select name="timezone" id="clock-{i}-timezone">
+					<label><select bind:value={selectedTimezone[i-1]} name="timezone" id="clock-{i}-timezone">
 						{#each timezones as timezone}
 							<option value="{timezone.value}">{timezone.label}</option>
 						{/each}
@@ -156,6 +163,7 @@
 					{/key}
 		
 					:
+
 					{#key timeString[6]}
 						<span in:fly="{{y: -20}}">{timeString[6]}</span>
 					{/key}

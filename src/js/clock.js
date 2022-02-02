@@ -14,7 +14,8 @@ export class Clock {
             active: false,
             triggered: false
         }
-        this.timezone = null;
+        let tempDate = new Date();
+        this.timezone = tempDate.getTimezoneOffset() / -60;
     }
 
     get timeAsString() {
@@ -74,10 +75,10 @@ export class Clock {
         // Set time to the current local time
         var today = new Date();
 
-        this._time.millisecond = today.getMilliseconds();
-        this._time.second      = today.getSeconds();
-        this._time.minute      = today.getMinutes();
-        this._time.hour        = today.getHours();
+        this._time.millisecond = today.getUTCMilliseconds();
+        this._time.second      = today.getUTCSeconds();
+        this._time.minute      = today.getUTCMinutes();
+        this._time.hour        = today.getUTCHours();
 
         if (this.timezone != null) {
             this._time.hour += Math.floor(this.timezone);
