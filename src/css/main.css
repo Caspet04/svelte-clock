@@ -11,12 +11,13 @@
     src: url('/fonts/clock.ttf');
 }
 
-h1#digital-clock {
+#digital-clock {
+    display: flex;
+    justify-content: center;
     color: black;
-    text-decoration: none;
-    text-align: center;
     font-size: 4em;
     font-family: digital-clock-font;
+    font-weight: bold;
 }
 
 button.clock-alarm-active {

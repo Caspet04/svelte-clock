@@ -1,22 +1,30 @@
 <!-- TODO: Refactor all code so it is more readable -->
 <script>
-	import { range, rangedLerp, loopingRangedLerp, loopingValue } from './js/utility.js';
+	import { fly } from 'svelte/transition';
 
+	import { range, rangedLerp, loopingRangedLerp, loopingValue } from './js/utility.js';
 	import "./css/main.css";
 	import { Clock } from "./js/clock";
 
 	let clock = new Clock();
+	let timeString = [
+		"0", "0", ":", "0", "0", ":", "0", "0"
+	]
+	let secondSpring
 
 	setInterval(() => {
 		clock.syncTime();
 		clock.updateAlarm();
 		clock = clock;
+		for (let i = 0; i < 8; i++) {
+			if (clock.timeAsString[i] != timeString[i]) {
+				timeString[i] = clock.timeAsString[i];
+			}
+		}
 	}, 10);
 
 	let stripClockWidth = 200;
 </script>
-
-<!-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| -->
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
 <!-- TODO: Set each clock in three separate columns -->
@@ -24,17 +32,17 @@
 <main>
 	<div id="clock-container">
 		<!-- "Normal" analog style clock -->
-		<div id="analog-clock" style="height:25%;">
-			<svg viewBox='-50 -50 100 100' width='100%' height='100%'>
+		<div id="analog-clock">
+			<svg viewBox='-50 -50 100 100'>
 				<!-- Clock markers, alternating larger and smaller every 5th marker -->
 				{#each range(0, 60, 1) as marker}
-				<line class='marker-{marker % 5 == 0 ? "large" : "small"}'
-				y1='{45 - (marker % 5 == 0 ? 10 : 5)}'
-				y2='45'
-				transform='rotate({6 * marker})' />
+					<line class='marker-{marker % 5 == 0 ? "large" : "small"}'
+						y1='{45 - (marker % 5 == 0 ? 10 : 5)}'
+						y2='45'
+						transform='rotate({6 * marker})' />
 				{/each}
 
-				<!-- Clock numbers -->
+				<!-- Clock numbers, they are rotated to place them in a circle and then the text is rotated back -->
 				{#each range(1, 13, 1) as clockNumber}
 					<g transform='rotate({-180+30*clockNumber})'>
 						<text 
@@ -49,21 +57,21 @@
 				
 				<!-- Hour hand -->
 				<line class='hour-hand'
-				y1='-5'
-				y2='35'
-				transform='rotate({180 + 30 * clock.hour_precise})' />
+					y1='-5'
+					y2='35'
+					transform='rotate({180 + 30 * clock.hour})' />
 				
 				<!-- Minute hand -->
 				<line class='minute-hand'
-				y1='-7'
-				y2='45'
-				transform='rotate({180 + 6 * clock.minute_precise})' />
+					y1='-7'
+					y2='45'
+					transform='rotate({180 + 6 * clock.minute})' />
 				
 				<!-- Second hand -->
 				<line class='second-hand'
-				y1='-10'
-				y2='45'
-				transform='rotate({180 + 6 * clock.second_precise})' />
+					y1='-10'
+					y2='45'
+					transform='rotate({180 + 6 * clock.second})' />
 				
 				<!-- Outside circle -->
 				<circle class='clock-outside'
@@ -74,25 +82,51 @@
 			</div>
 			
 			<!-- 00:00:00 style clock -->
-			<h1 id="digital-clock">{clock.timeAsString}</h1>
-			
+			<div id="digital-clock">
+				{#key timeString[0]}
+					<span in:fly="{{y: -20}}">{timeString[0]}</span>
+				{/key}
+				{#key timeString[1]}
+					<span in:fly="{{y: -20}}">{timeString[1]}</span>
+				{/key}
+				{#key timeString[2]}
+					<span in:fly="{{y: -20}}">{timeString[2]}</span>
+				{/key}
+				{#key timeString[3]}
+					<span in:fly="{{y: -20}}">{timeString[3]}</span>
+				{/key}
+				{#key timeString[4]}
+					<span in:fly="{{y: -20}}">{timeString[4]}</span>
+				{/key}
+				{#key timeString[5]}
+					<span in:fly="{{y: -20}}">{timeString[5]}</span>
+				{/key}
+				{#key timeString[6]}
+					<span in:fly="{{y: -20}}">{timeString[6]}</span>
+				{/key}
+				{#key timeString[7]}
+					<span in:fly="{{y: -20}}">{timeString[7]}</span>
+				{/key}
+			</div>
+
+			<!-- TODO: Remake into vertical strips instead -->
 			<!-- Strip style clock, second, minute and hour is represented by a moving strip each -->
 			<div id="strip-clock">
 				<svg viewBox='-{(stripClockWidth+4)/2} 0 {stripClockWidth+4} 54' width='100%' height='100%'>
 					<!-- Second moving markers, alternating large and small every 5th marker -->
 					{#each range(0, 60, 1) as marker}
-					{#if loopingValue(marker+30 - clock.second_precise, 0, 60) < 45 && loopingValue(marker+30 - clock.second_precise, 0, 60) > 15}
+					{#if loopingValue(marker+30 - clock.second, 0, 60) < 45 && loopingValue(marker+30 - clock.second, 0, 60) > 15}
 					<line class='marker-{marker % 5 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmSecond ? "alarm-marker" : "")}'
 							y1='{marker % 5 == 0 ? 6 : 7}'
 							y2='10'
-							x1='{loopingRangedLerp((marker+30-clock.second_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+30-clock.second_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'/>
+							x1='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
+							x2='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'/>
 						{#if marker % 5 == 0}
 							<text 
 								class="clock-strip-number"
 								text-anchor='middle' 
 								y='5'
-								x='{loopingRangedLerp((marker+30-clock.second_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
+								x='{loopingRangedLerp((marker+30-clock.second) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
 								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
 								{marker}
 						</text>
@@ -106,18 +140,18 @@
 
 				<!-- Minute moving markers, alternating large and small every 5th marker -->
 				{#each range(0, 60, 1) as marker}
-					{#if loopingValue(marker+30 - clock.minute_precise, 0, 60) < 45 && loopingValue(marker+30 - clock.minute_precise, 0, 60) > 15}
+					{#if loopingValue(marker+30 - clock.minute, 0, 60) < 45 && loopingValue(marker+30 - clock.minute, 0, 60) > 15}
 						<line class='marker-{marker % 5 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmMinute ? "alarm-marker" : "")}'
 							y1='{marker % 5 == 0 ? 16 : 17}'
 							y2='20'
-							x1='{loopingRangedLerp((marker+30-clock.minute_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+30-clock.minute_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}' />
+							x1='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'
+							x2='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}' />
 						{#if marker % 5 == 0}
 							<text 
 								class="clock-strip-number"
 								text-anchor='middle' 
 								y='15'
-								x='{loopingRangedLerp((marker+30-clock.minute_precise) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
+								x='{loopingRangedLerp((marker+30-clock.minute) % 60, 0, 60, -stripClockWidth, stripClockWidth)}'>
 								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
 								{marker}
 						</text>
@@ -131,18 +165,18 @@
 
 				<!-- Hour moving markers -->
 				{#each range(0, 24*2, 1) as marker}
-					{#if loopingValue(marker+24 - clock.hour_precise*2, 0, 24*2) < 36 && loopingValue(marker+24 - clock.hour_precise*2, 0, 24*2) > 12}
+					{#if loopingValue(marker+24 - clock.hour*2, 0, 24*2) < 36 && loopingValue(marker+24 - clock.hour*2, 0, 24*2) > 12}
 						<line class='marker-{marker % 2 == 0 ? "large" : "small"} {clock.alarmIsActive && (marker == clock.alarmHour ? "alarm-marker" : "")}'
 							y1='{marker % 2 == 0 ? 26 : 27}'
 							y2='30'
-							x1='{loopingRangedLerp((marker+24-clock.hour_precise*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'
-							x2='{loopingRangedLerp((marker+24-clock.hour_precise*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}' />
+							x1='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'
+							x2='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}' />
 						{#if marker % 2 == 0}
 							<text 
 								class="clock-strip-number"
 								text-anchor='middle' 
 								y='25'
-								x='{loopingRangedLerp((marker+24-clock.hour_precise*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'>
+								x='{loopingRangedLerp((marker+24-clock.hour*2) % (24*2), 0, 24*2, -stripClockWidth, stripClockWidth)}'>
 								<!-- For some reason the markers are inversed decrease to the right instead of increasing -->
 								{marker/2}
 						</text>

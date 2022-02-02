@@ -69,17 +69,6 @@ export class Clock {
     get alarmMinute() { return this._alarm.minute; }
     get alarmHour()   { return this._alarm.hour;   }
 
-    // Getters for the time elements with decimals
-    get second_precise() {
-        return this._time.second + this._time.millisecond / 1000;
-    }
-    get minute_precise() {
-        return this._time.minute + this.second_precise/60;
-    }
-    get hour_precise() {
-        return this._time.hour + this.minute_precise/60;
-    }
-
     syncTime() {
         // Set time to the current time
         var today = new Date();
