@@ -1,3 +1,7 @@
+<!-- TODO: Refactor after added the ability to get single digits from clock -->
+<!-- TODO: Add config overlay that appears when configurating a clock -->
+<!-- TODO: Make it possible to have multiple alarms, unique to each clock -->
+<!-- TODO: Add ability to change each clocks timezone -->
 <script>
 	import { fly, fade } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
@@ -6,10 +10,12 @@
 	import { Clock } from "./js/clock";
 
 	let clock = new Clock();
+	
 	let timeString = [
 		"0", "0", ":", "0", "0", ":", "0", "0"
 	]
 	
+	// NOTE: Consider moving to another file
 	const stripSizes = [3, 10, 6, 10, 6, 10];
 	const stripHoleSize = 4;
 	const stripHolePadding = 0.5;
@@ -30,6 +36,7 @@
 		clock.syncTime();
 		clock.updateAlarm();
 		clock = clock;
+
 		for (let i = 0; i < 8; i++) {
 			if (clock.timeAsString[i] != timeString[i]) {
 				timeString[i] = clock.timeAsString[i];
