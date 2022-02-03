@@ -53,7 +53,6 @@
 			clocks[i] = clocks[i];
 		}
 		
-		//TODO: Refactor after added the ability to get single digits from clock
 		for (let i = 0; i < 8; i++) {
 			timeString[i] = clocks[1].timeAsString[i];
 		}
@@ -73,7 +72,14 @@
 		stripYOffset[5] = $stripYSpring5;
 	}, 1);
 	
+	$: outerWidth = 0
+	$: innerWidth = 0
+	$: outerHeight = 0
+	$: innerHeight = 0
 </script>
+
+<!-- This binds the window dimensions to variables -->
+<svelte:window bind:innerWidth bind:outerWidth bind:innerHeight bind:outerHeight />
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
 <main>
@@ -183,7 +189,7 @@
 			{/key}
 		</div>
 		<div class="clock" id="strip">
-			<svg viewBox='0 {(20*stripHoleSize + stripHeightPadding*2)/-2} {stripWidth+2} {20*stripHoleSize + stripHeightPadding*2}' width='100%' height='100%'>
+			<svg viewBox='0 {innerWidth > 800 ? (20*stripHoleSize + stripHeightPadding*2)/-2 : -10} {stripWidth+2} {innerWidth > 800 ? 20*stripHoleSize + stripHeightPadding*2 : 20}' width='100%' height='100%'>
 				{#each range(0, 6, 1) as i}
 					<g transform="translate({1 + stripSidePadding + stripHoleSize*i + Math.floor((i+1)/2)*stripHolePadding + Math.floor(i/2)*stripHoleGap},{-stripHoleSize*stripYOffset[i]-stripHoleSize/2 - stripHeightPadding - 1})">
 						<rect
@@ -209,7 +215,7 @@
 				{/each}
 				<mask id="numberHoles">
 					<rect
-						x="0" y="-50"
+						x="0" y="{innerWidth > 800 ? -50 : -10}"
 						width="100%" height="100%"
 						fill="white"/>
 	
