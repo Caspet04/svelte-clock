@@ -5,24 +5,31 @@ html, body, main {
 
 /* Panel */
 #panel {
+    position: fixed;
+    top: 0;
+
     width: 100vw;
     height: 40px;
     margin-bottom: 20px;
 
     background-color: lightgrey;
+    z-index: 10;
 }
 
 #panel ul {
     margin: 0;
     padding: 0;
+    
     list-style-type: none;
 }
 
 #panel ul li {
-    box-sizing: border-box;
-    padding-left: 10px;
     width: 100%;
     height: 40px;
+    padding-left: 10px;
+    
+    box-sizing: border-box;
+    
     border-bottom: 1px solid black;
 }
 
@@ -38,30 +45,41 @@ html, body, main {
     padding: 0;
     width: 100%;
     height: 100%;
+    
     border: none;
     background: none;
+    
     text-align: left;
 }
 
 /* Overlays */
 #clock-config-overlay {
-    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 20;
+    
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 #clock-config-overlay-content {
-    background-color: white;
+    position: fixed;
+    max-width: 85vw;
+    max-height: 80vh;
     padding: 20px;
+    
+    background-color: white;
+
     border: 1px solid black;
     border-radius: 20px;
+
+    overflow-y: scroll;
 }
 
 #clock-config-overlay-close-button {
@@ -70,9 +88,11 @@ html, body, main {
 
 .clock-controls {
     display: grid;
+
     word-wrap: none;
     white-space: nowrap;
-    grid-template-columns: min-content min-content auto;
+    
+    grid-template-columns: min-content auto;
     grid-template-rows: min-content min-content;
 }
 
@@ -80,22 +100,26 @@ html, body, main {
     margin-right: 10px;
 }
 
-/* Content */
-#content {
-    margin-left: 10%;
+.alarm-time {
+    width: 100px;
 }
-
 
 /* Clock container */
 #clock-container {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
 }
 
 /* Analog clock */
 .clock#analog {
     min-width: 300px;
+    
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 0.7em;
 }
@@ -141,18 +165,22 @@ html, body, main {
     src: url('/fonts/clock.ttf');
 }
 
-.clock#digital .clock {
+.clock#digital {
     display: flex;
     justify-content: center;
+    
     color: black;
+    
     font-size: 5em;
     font-family: digital-clock-font;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 /* Strip clock */
 .clock#strip {
     min-width: 150px;
+    
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 0.2em;
 }
@@ -173,10 +201,12 @@ div#clock-alarm-triggered-popup {
     right: 20%;
     top: 40%;
     bottom: 40%;
+    padding: 5px;
+    
     background-color: white;
+    
     border-radius: 10px;
     border: solid 1px black;
-    padding: 5px;
 }
 
 div#clock-alarm-triggered-popup h1 {
@@ -184,13 +214,56 @@ div#clock-alarm-triggered-popup h1 {
 }
 
 div.overlay {
-    position: fixed; /* Sit on top of the page content */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
+    position: fixed;
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-    cursor: pointer; /* Add a pointer on hover */
+    
+    background-color: rgba(0,0,0,0.5);
+    
+    cursor: pointer;
+}
+
+/* Phone modifications */
+@media only screen and (max-width: 600px) {
+    #clock-container {
+        flex-direction: column;
+    }
+
+    .clock {
+        margin-bottom: 100px;
+    }
+
+    .clock:last-child {
+        margin-bottom: 0;
+    }
+
+    .clock#digital {
+        font-size: 3em;
+    }
+
+    .clock#strip {
+        max-width: 60vw;
+    }
+
+    .clock#strip svg {
+        mask-image: linear-gradient(to bottom, transparent 5%, black 90%, transparent 5%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    }
+
+    .clock#analog {
+        min-width: 60vw;
+    }
+
+    .clock-controls {
+        grid-template-columns: 100%;
+        grid-template-rows: min-content min-content min-content min-content;
+    }
+
+    .timezone-selector {
+        margin-bottom: 15px;
+    }
 }
