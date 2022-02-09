@@ -3,6 +3,24 @@ html, body, main {
     padding: 0;
 }
 
+/* Animations */
+
+@keyframes fill-flash-animation {
+    0% {
+        fill: rgba(50, 0, 0, 0.1);
+    }
+    20% {
+        fill:rgba(255, 255, 255, 0.1);
+    }
+    100% {
+        fill: none;
+    }
+}
+
+.fill-flash {
+    animation: fill-flash-animation 1s;
+}
+
 /* Panel */
 #panel {
     position: fixed;
@@ -53,7 +71,7 @@ html, body, main {
 }
 
 /* Overlays */
-#clock-config-overlay {
+#overlay {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,6 +86,7 @@ html, body, main {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+/* Clock config overlay */
 #clock-config-overlay-content {
     position: fixed;
     max-width: 85vw;
@@ -78,8 +97,6 @@ html, body, main {
 
     border: 1px solid black;
     border-radius: 20px;
-
-    overflow-y: scroll;
 }
 
 #clock-config-overlay-close-button {
@@ -102,6 +119,27 @@ html, body, main {
 
 .alarm-time {
     width: 100px;
+}
+
+/* Alarm triggered overlay */
+#alarm-trigger-overlay-content {
+    position: fixed;
+    max-width: 85vw;
+    max-height: 80vh;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    background-color: white;
+
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+#alarm-text {
+    margin-bottom: 40px;
 }
 
 /* Clock container */
@@ -158,6 +196,7 @@ html, body, main {
     stroke-width: 2;
     fill: none;
 }
+
 
 /* Digital clock */
 @font-face {
@@ -256,6 +295,10 @@ div.overlay {
 
     .clock#analog {
         min-width: 60vw;
+    }
+
+    #clock-config-overlay-content {
+        overflow-y: scroll;
     }
 
     .clock-controls {

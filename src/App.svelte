@@ -24,6 +24,7 @@
 	];
 
     let clockConfigOverlayHidden = true;
+	let alarmTriggerOverlayHidden = true; 
 	
 	// NOTE: Consider moving to another file
 	const stripSizes = [3, 10, 6, 10, 6, 10];
@@ -71,11 +72,26 @@
 		stripYOffset[4] = $stripYSpring4;
 		stripYOffset[5] = $stripYSpring5;
 	}, 1);
+
+	$: {
+		let temp = true;
+		for (let i = 0; i < 3; i++) {
+			if (clocks[i].alarmIsTriggered) {
+				temp = false;
+			}
+		}
+
+		alarmTriggerOverlayHidden = temp;
+	}
 	
 	$: outerWidth = 0
 	$: innerWidth = 0
 	$: outerHeight = 0
 	$: innerHeight = 0
+
+	clocks[0].alarmText = innerWidth > 800 ? "Left Alarm"  : "Top Alarm";
+	clocks[1].alarmText = "Center Alarm";
+	clocks[2].alarmText = innerWidth > 800 ? "Right Alarm" : "Bottom Alarm";
 </script>
 
 <!-- This binds the window dimensions to variables -->
@@ -83,26 +99,49 @@
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
 <main>
-	{#if !clockConfigOverlayHidden }
-		<div id="clock-config-overlay">
-			<div id="clock-config-overlay-content">
-				<button id="clock-config-overlay-close-button" on:click="{() => { clockConfigOverlayHidden = true; }}">Close</button>
-				{#each range(1, 4, 1) as i}
-					<div id="clock-{i}">
-						<h2>{ ["Left Clock", "Center Clock", "Right Clock"][i-1] }</h2>
-						<div class="clock-controls">
-							<span class="timezone-label" >Timezone: </span>
-							<select class="timezone-selector" bind:value={selectedTimezone[i-1]} name="timezone" id="clock-{i}-timezone">
-								{#each timezones as timezone}
-									<option value="{timezone.value}">{timezone.label}</option>
-								{/each}
-							</select>
-							<label class="alarm-check">Alarm: <input type="checkbox" bind:value={clocks[i-1].alarmIsActive}></label>
-							<input class="alarm-time" type="time" bind:value={clocks[i-1].alarmTimeAsString}>
+	{#if !clockConfigOverlayHidden || !alarmTriggerOverlayHidden }
+		<div id="overlay">
+			{#if !clockConfigOverlayHidden}
+				<div id="clock-config-overlay-content">
+					<button id="clock-config-overlay-close-button" on:click="{() => { clockConfigOverlayHidden = true; }}">Close</button>
+					{#each range(0, 3, 1) as i}
+						<div id="clock-{i+1}">
+							<h2>
+								{ [
+									innerWidth > 800 ? "Left Clock" : "Top Clock",
+									"Center Clock",
+									innerWidth > 800 ? "Right Clock" : "Bottom Clock"
+									][i] }
+							</h2>
+							<div class="clock-controls">
+								<span>Timezone: </span>
+								<select class="timezone-selector" bind:value={selectedTimezone[i]} name="timezone" id="clock-{i}-timezone">
+									{#each timezones as timezone}
+										<option value="{timezone.value}">{timezone.label}</option>
+									{/each}
+								</select>
+								<label>Alarm: <input type="checkbox" bind:checked={clocks[i].alarmIsActive}></label>
+								<input class="alarm-time" type="time" bind:value={clocks[i].alarmTimeAsString}>
+								<span>Alarm Name: </span>
+								<input type="text" bind:value={clocks[i].alarmText}>
+							</div>
 						</div>
-					</div>
-				{/each}
-			</div>
+					{/each}
+				</div>
+			{:else if !alarmTriggerOverlayHidden}
+				<div id="alarm-trigger-overlay-content">
+					{#each range(0, 3, 1) as i}
+						{#if clocks[i].alarmIsTriggered }
+							<h1 class="alarm-text">{clocks[i].alarmText}</h1>
+							<div class="alarm-controls">
+								<button on:click={()=>{ clocks[i].reset()  }}>Reset Alarm</button>
+								<button on:click={()=>{ clocks[i].snooze() }}>Snooze (5 min)</button>
+								<button on:click={()=>{ clocks[i].stop()   }}>Stop Alarm</button>
+							</div>
+						{/if}
+					{/each}
+				</div>
+			{/if}
 		</div>
 	{/if}
 
@@ -153,40 +192,23 @@
 					transform='rotate({180 + 6 * clocks[0].second})' />
 	
 				<!-- Outside circle -->
-				<circle class='clock-outside'
+				{#key clocks[0].second}
+				<circle class='clock-outside fill-flash'
 					cx='0'
 					cy='0'
 					r='45' />
+				{/key}
 			</svg>
-			{#if clocks[0].alarmIsTriggered }
-				ALARM
-			{/if}
 		</div>
 		<div class="clock" id="digital">
-			{#key timeString[0]}
-				<span in:fly="{{y: -20}}">{timeString[0]}</span>
-			{/key}
-			{#key timeString[1]}
-				<span in:fly="{{y: -20}}">{timeString[1]}</span>
-			{/key}
-
+			{#key timeString[0]}<span in:fly="{{y: -20}}">{timeString[0]}</span>{/key}
+			{#key timeString[1]}<span in:fly="{{y: -20}}">{timeString[1]}</span>{/key}
 			:
-
-			{#key timeString[3]}
-				<span in:fly="{{y: -20}}">{timeString[3]}</span>
-			{/key}
-			{#key timeString[4]}
-				<span in:fly="{{y: -20}}">{timeString[4]}</span>
-			{/key}
-
+			{#key timeString[3]}<span in:fly="{{y: -20}}">{timeString[3]}</span>{/key}
+			{#key timeString[4]}<span in:fly="{{y: -20}}">{timeString[4]}</span>{/key}
 			:
-
-			{#key timeString[6]}
-				<span in:fly="{{y: -20}}">{timeString[6]}</span>
-			{/key}
-			{#key timeString[7]}
-				<span in:fly="{{y: -20}}">{timeString[7]}</span>
-			{/key}
+			{#key timeString[6]}<span in:fly="{{y: -20}}">{timeString[6]}</span>{/key}
+			{#key timeString[7]}<span in:fly="{{y: -20}}">{timeString[7]}</span>{/key}
 		</div>
 		<div class="clock" id="strip">
 			<svg viewBox='0 {innerWidth > 800 ? (20*stripHoleSize + stripHeightPadding*2)/-2 : -10} {stripWidth+2} {innerWidth > 800 ? 20*stripHoleSize + stripHeightPadding*2 : 20}' width='100%' height='100%'>

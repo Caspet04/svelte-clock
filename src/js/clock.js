@@ -12,10 +12,19 @@ export class Clock {
             minute: null,
             second: null,
             active: false,
-            triggered: false
+            triggered: false,
+            text: ""
         }
         let tempDate = new Date();
         this.timezone = tempDate.getTimezoneOffset() / -60;
+    }
+
+    get alarmText() {
+        return this._alarm.text;
+    }
+
+    set alarmText(text) {
+        this._alarm.text = text;
     }
 
     get timeAsString() {
@@ -33,11 +42,12 @@ export class Clock {
     set alarmTimeAsString(string) {
         let parts = string.split(':');
         this._alarm = {
-            hour: parts[0], // Takes the leftmost element to 
-            minute: parts[1],
-            second: parts.length > 2 ? parts[2] : 0,
+            hour: parseInt(parts[0]), // Takes the leftmost element to 
+            minute: parseInt(parts[1]),
+            second: parts.length > 2 ? parseInt(parts[2]) : 0,
             active: this._alarm.active,
-            triggered: false
+            triggered: false,
+            text: this._alarm.text
         }
     }
 
@@ -81,7 +91,7 @@ export class Clock {
         this._time.hour        = today.getUTCHours();
 
         if (this.timezone != null) {
-            this._time.hour += Math.floor(this.timezone);
+            this._time.hour   += Math.floor(this.timezone);
             this._time.minute += this.timezone % 1 * 60;
         }
 
@@ -142,6 +152,39 @@ export class Clock {
                 return Math.floor(this.second / 10);
             case 5:
                 return this.second % 10;
+        }
+    }
+
+    reset() {
+        if (!this._alarm.triggered || !this._alarm.active) { return; }
+
+        this._alarm.triggered = false;
+        this._alarm.active    = true;
+    }
+
+    snooze(minutes=5) {
+        if (!this._alarm.triggered || !this._alarm.active) { return; }
+
+        this._alarm.triggered = false;
+        this._alarm.active    = true;
+        
+        this._alarm.minute += minutes;
+        this._alarm.hour   += this._alarm.minute >= 60 ? 1 : 0;
+
+        this._alarm.minute %= 60;
+        this._alarm.hour   %= 24;
+    }
+
+    stop() {
+        if (!this._alarm.triggered || !this._alarm.active) { return; }
+
+        this._alarm = {
+            hour: null,
+            minute: null,
+            second: null,
+            active: false,
+            triggered: false,
+            text: this._alarm.text
         }
     }
 }
