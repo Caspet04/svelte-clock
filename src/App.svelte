@@ -1,11 +1,11 @@
-<!-- TODO: Add config overlay that appears when configurating a clock -->
-<!-- TODO: Make it possible to have multiple alarms, unique to each clock -->
-<!-- TODO: Add ability to change each clocks timezone -->
 <script>
-	import { fly, fade } from 'svelte/transition';
+	import "./css/main.css";
+	import "./css/background.css";
+
+	import { bubbles } from './background.js';
+	import { fly } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
 	import { range } from './js/utility.js';
-	import "./css/main.css";
 	import { Clock } from "./js/clock";
 	import { timezones } from './timezones.js';
 
@@ -99,6 +99,12 @@
 
 <!-- TODO: Add more comments describing what happens and organize it so it is more legible -->
 <main>
+	<div id="background-animation">
+		{#each bubbles as bubble}
+			<span class="bubble" style="--x: {bubble.x}%; --y: {bubble.y}px; --size: {bubble.size}; --rise-speed: {bubble.riseSpeed}s; --sway-speed: {bubble.swaySpeed}s; --animation-offset: {bubble.animationOffset}s" />
+		{/each}
+	</div>
+
 	{#if !clockConfigOverlayHidden || !alarmTriggerOverlayHidden }
 		<div id="overlay">
 			{#if !clockConfigOverlayHidden}

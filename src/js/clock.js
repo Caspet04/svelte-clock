@@ -93,8 +93,10 @@ export class Clock {
         if (this.timezone != null) {
             this._time.hour   += Math.floor(this.timezone);
             this._time.minute += this.timezone % 1 * 60;
+            if (this._time.minute < 0) {
+                this._time.minute += 60;
+            }
         }
-
     }
 
     tick(useMilli=false) {
