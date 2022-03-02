@@ -202,7 +202,7 @@ html, body, main {
 /* Digital clock */
 @font-face {
     font-family:'digital-clock-font';
-    src: url('/fonts/clock.ttf');
+    src: url('./fonts/clock.ttf');
 }
 
 .clock#digital {
