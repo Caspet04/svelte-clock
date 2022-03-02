@@ -200,10 +200,6 @@ html, body, main {
 
 
 /* Digital clock */
-@font-face {
-    font-family:'digital-clock-font';
-    src: url('https://caspet04.github.io/svelte-clock/public/fonts/clock.ttf'); /* This requires the use of an absolute path for some reason */
-}
 
 .clock#digital {
     display: flex;
@@ -212,8 +208,7 @@ html, body, main {
     color: black;
     
     font-size: 5em;
-    font-family: digital-clock-font;
-    font-weight: bold;
+    font-family: 'Great Vibes', cursive;
     white-space: nowrap;
 }
 
