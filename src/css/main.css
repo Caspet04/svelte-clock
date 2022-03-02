@@ -202,7 +202,7 @@ html, body, main {
 /* Digital clock */
 @font-face {
     font-family:'digital-clock-font';
-    src: url('./fonts/clock.ttf');
+    src: url('https://caspet04.github.io/svelte-clock/public/fonts/clock.ttf'); /* This requires the use of an absolute path for some reason */
 }
 
 .clock#digital {

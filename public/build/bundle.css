@@ -1,58 +1,4 @@
-#background-animation {
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.bubble {
-    position: absolute;
-    left: var(--x);
-    bottom: var(--y);
-    width: 25px;
-    height: 25px;
-    animation: bubbleRiseAnimation var(--rise-speed) linear infinite, bubbleSwayAnimation var(--sway-speed) ease-in-out infinite alternate;
-    animation-delay: var(--animation-offset), var(--animation-offset);
-    
-    border-radius: 50%;
-    
-    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2), inset 0px 2px 4px 1px rgba(255, 255, 255, 0.9);
-    
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
-    
-    transform: scale(var(--size));
-}
-
-@keyframes bubbleSwayAnimation {
-    0% {
-        margin-left: 0px;
-    }
-    100% {
-        margin-left: 70px;
-    }
-}
-
-@keyframes bubbleRiseAnimation {
-    0% {
-        margin-bottom: 0vh;
-    }
-    100% {
-        margin-bottom: 200vh;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    @keyframes bubbleRiseAnimation {
-        0% {
-            margin-bottom: 0vh;
-        }
-        100% {
-            margin-bottom: 400vh;
-        }
-    }
-}html, body, main {
+html, body, main {
     margin: 0;
     padding: 0;
     background-color: lightblue;
@@ -256,7 +202,7 @@
 /* Digital clock */
 @font-face {
     font-family:'digital-clock-font';
-    src: url('./fonts/clock.ttf');
+    src: url('https://caspet04.github.io/svelte-clock/public/fonts/clock.ttf'); /* This requires the use of an absolute path for some reason */
 }
 
 .clock#digital {
@@ -363,5 +309,59 @@ div.overlay {
 
     .timezone-selector {
         margin-bottom: 15px;
+    }
+}#background-animation {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--x);
+    bottom: var(--y);
+    width: 25px;
+    height: 25px;
+    animation: bubbleRiseAnimation var(--rise-speed) linear infinite, bubbleSwayAnimation var(--sway-speed) ease-in-out infinite alternate;
+    animation-delay: var(--animation-offset), var(--animation-offset);
+    
+    border-radius: 50%;
+    
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2), inset 0px 2px 4px 1px rgba(255, 255, 255, 0.9);
+    
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    
+    transform: scale(var(--size));
+}
+
+@keyframes bubbleSwayAnimation {
+    0% {
+        margin-left: 0px;
+    }
+    100% {
+        margin-left: 70px;
+    }
+}
+
+@keyframes bubbleRiseAnimation {
+    0% {
+        margin-bottom: 0vh;
+    }
+    100% {
+        margin-bottom: 200vh;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    @keyframes bubbleRiseAnimation {
+        0% {
+            margin-bottom: 0vh;
+        }
+        100% {
+            margin-bottom: 400vh;
+        }
     }
 }
